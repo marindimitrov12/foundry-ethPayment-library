@@ -32,5 +32,19 @@ contract EthPaymentTest is Test{
        ethPayment.makePayment{value:0}(Recipient);
         
     }
+    function testGetTotalPaymentsWorksCorrectly()public{
+         vm.prank(SENDER);
+       ethPayment.makePayment{value:SEND_VALUE}(Recipient);
+       vm.prank(Recipient);
+       uint256 result=ethPayment.getTotalPayments(Recipient);
+       assert(result==SEND_VALUE);
+    }
+    function testGetTotalPaymentsRevertIfNeeded()public{
+         vm.prank(SENDER);
+       ethPayment.makePayment{value:SEND_VALUE}(Recipient);
+       vm.expectRevert();
+       ethPayment.getTotalPayments(Recipient);
+      
+    }
 
 }
