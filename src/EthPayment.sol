@@ -16,9 +16,9 @@ contract EthPayment {
     }
    
 
-    function makePayment(address payable _recipient) external payable {
+    function makePayment(address  _recipient) external payable {
           uint256 timestamp = block.timestamp;
-        if(msg.value<0){
+        if(msg.value<=0){
           revert Payment_Amount_Must_Be_Greater_Than_0(msg.value);
         }
          (bool success,)=_recipient.call{value:msg.value}("");
