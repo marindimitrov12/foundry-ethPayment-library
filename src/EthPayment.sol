@@ -7,7 +7,7 @@ contract EthPayment {
     error Cant_Access_Other_PeaplePayments();
    
     
-    event PaymentReceived(address indexed _from, uint256 _amount,uint256 timestamp);
+    event PaymentReceived(address  _from,address indexed _to, uint256 _amount,string timestamp);
 
     mapping(address=>mapping(address=>uint256))private totalPayments;
     mapping(address=>address)private addressToAddress;
@@ -31,7 +31,7 @@ contract EthPayment {
         addressToAddress[_recipient]=msg.sender;
         counter++;
         blockTimestamps.push(timestampToDateTime(block.timestamp));
-        emit PaymentReceived(msg.sender, msg.value, timestamp);
+        emit PaymentReceived(msg.sender,_recipient, msg.value, timestampToDateTime(timestamp));
     }
     function getTotalPayments(address user)external view returns(uint256[] memory, address[] memory,string[] memory){
         if(msg.sender!=user){
