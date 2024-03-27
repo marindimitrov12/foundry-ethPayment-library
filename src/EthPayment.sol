@@ -9,10 +9,7 @@ contract EthPayment {
     
     event PaymentReceived(address  _from,address indexed _to, uint256 _amount,string timestamp);
 
-    mapping(address=>mapping(address=>uint256))private totalPayments;
-    mapping(address=>address)private addressToAddress;
-     string[] public blockTimestamps;
-    uint256 counter;
+    mapping(address=>mapping(address=>uint256)) private totalPayments;
     constructor() {
         
     }
@@ -28,28 +25,16 @@ contract EthPayment {
         revert Payment__TransferFailed();
         }
         totalPayments[_recipient][msg.sender]+=msg.value;
-        addressToAddress[_recipient]=msg.sender;
-        counter++;
-        blockTimestamps.push(timestampToDateTime(block.timestamp));
+        
         emit PaymentReceived(msg.sender,_recipient, msg.value, timestampToDateTime(timestamp));
     }
-    function getTotalPayments(address user)external view returns(uint256[] memory, address[] memory,string[] memory){
-        if(msg.sender!=user){
-          revert Cant_Access_Other_PeaplePayments();
+      function getTotalPayments(address _receiver,address _sender)external view returns(uint256){
+        if(msg.sender!=_receiver){
+            revert Cant_Access_Other_PeaplePayments();
         }
-         
-        address[] memory recipients = new address[](counter);
-        uint256[] memory amounts = new uint256[](counter);
-        string[] memory timestamps = new string[](counter);
-        for(uint256 i=0;i<counter;i++){
-          address recipient = addressToAddress[user];
-            recipients[i]=recipient;
-            amounts[i] = totalPayments[user][recipient];
-            timestamps[i]=blockTimestamps[i];
-        }
-         return (amounts, recipients,timestamps);
-      
-    }
+         return totalPayments[_receiver][_sender];
+      }
+    
       function timestampToDateTime(uint256 timestamp) private pure returns (string memory) {
         uint256 day = timestamp / 86400 % 30 + 1;
         uint256 month = timestamp / 2629743 % 12 + 1;
